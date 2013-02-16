@@ -43,29 +43,29 @@ namespace LbF
 			var instrumentType = instrument.GetType().GetCustomAttributes(typeof(FinancialInstrumentAttribute), true);
 			if (instrumentType.Length > 0 && instrumentType[0] is FinancialInstrumentAttribute)
 				stringBuilder.AppendFormat("\n##### {0} #####\n", ((FinancialInstrumentAttribute) instrumentType[0]).Name);
-		
+
 			var properties = instrument.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-		
+
 			stringBuilder.Append("\n  --- Input ---\n");
 			foreach (var propertyDefinition in properties)
 			{
-				if (propertyDefinition.IsDefined(typeof(FinancialInputAttribute), true))
-				{
-					var propertyValue = propertyDefinition.GetValue(instrument, null);
-					stringBuilder.AppendFormat(("  | " + propertyDefinition.Name + ":").PadRight(Constants.Spacing)
-						+ "{0}\n", propertyValue.ToString());
-				}
+				if (!propertyDefinition.IsDefined(typeof(FinancialInputAttribute), true))
+					continue;
+
+				var propertyValue = propertyDefinition.GetValue(instrument, null);
+				stringBuilder.AppendFormat(("  | " + propertyDefinition.Name + ":").
+					PadRight(Constants.Spacing) + "{0}\n", propertyValue);
 			}
 
 			stringBuilder.Append("\n  --- Output ---\n");
 			foreach (var propertyDefinition in properties)
 			{
-				if (propertyDefinition.IsDefined(typeof(FinancialOutputAttribute), true))
-				{
-					var propertyValue = propertyDefinition.GetValue(instrument, null);
-					stringBuilder.AppendFormat(("  | " + propertyDefinition.Name + ":").PadRight(Constants.Spacing)
-						+ "{0}\n", propertyValue.ToString());
-				}
+				if (!propertyDefinition.IsDefined(typeof(FinancialOutputAttribute), true))
+					continue;
+
+				var propertyValue = propertyDefinition.GetValue(instrument, null);
+				stringBuilder.AppendFormat(("  | " + propertyDefinition.Name + ":").
+					PadRight(Constants.Spacing) + "{0}\n", propertyValue);
 			}
 			stringBuilder.Append("  --------------\n");
 

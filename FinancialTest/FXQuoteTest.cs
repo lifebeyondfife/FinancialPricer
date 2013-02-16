@@ -23,43 +23,41 @@ namespace LbF
 	[TestClass]
 	public class FXQuoteTest
 	{
-		private FXQuote fxAUD_USD;
-		private FXQuote fxGBP_JPY;
-		private FXQuote fxGBP_USD;
-		private FXQuote fxUSD_CHF;
-		private FXQuote fxUSD_EUR;
+		private readonly FXQuote fxAUD_USD;
+		private readonly FXQuote fxGBP_USD;
+		private readonly FXQuote fxUSD_CHF;
+		private readonly FXQuote fxUSD_EUR;
 
 		public FXQuoteTest()
 		{
-			this.fxAUD_USD = new FXQuote(baseCurrency: "AUD", counterCurrency: "USD", bidRate: 1.00275, offerPlusPip: 5);
-			this.fxGBP_JPY = new FXQuote(baseCurrency: "GBP", counterCurrency: "JPY", bidRate: 122.120, offerPlusPip: 5);
-			this.fxGBP_USD = new FXQuote(baseCurrency: "GBP", counterCurrency: "USD", bidRate: 1.56788, offerPlusPip: 5);
-			this.fxUSD_CHF = new FXQuote(baseCurrency: "USD", counterCurrency: "CHF", bidRate: 0.92866, offerPlusPip: 5);
-			this.fxUSD_EUR = new FXQuote(baseCurrency: "USD", counterCurrency: "EUR", bidRate: 0.76257, offerPlusPip: 5);
+			this.fxAUD_USD = new FXQuote(baseCurrency: "AUD", counterCurrency: "USD", bidRate: 1.00275d, offerPlusPip: 5);
+			this.fxGBP_USD = new FXQuote(baseCurrency: "GBP", counterCurrency: "USD", bidRate: 1.56788d, offerPlusPip: 5);
+			this.fxUSD_CHF = new FXQuote(baseCurrency: "USD", counterCurrency: "CHF", bidRate: 0.92866d, offerPlusPip: 5);
+			this.fxUSD_EUR = new FXQuote(baseCurrency: "USD", counterCurrency: "EUR", bidRate: 0.76257d, offerPlusPip: 5);
 		}
 
 		[TestMethod]
 		public void TestCalculateSameQuote()
 		{
 			var fxCHF_EUR = FXQuote.CalculateCrossCurrencyQuote(this.fxUSD_CHF, this.fxUSD_EUR);
-			Assert.AreEqual(0.82070902750871755, fxCHF_EUR.BidRate, 1E-10, "Bid rate wrong for A/B, A/C => B/C");
-			Assert.AreEqual(0.82168931578834, fxCHF_EUR.OfferRate, 1E-10, "Offer rate wrong for A/B, A/C => B/C");
+			Assert.AreEqual(0.82070902750871755d, fxCHF_EUR.BidRate, Mathematics.Error, "Bid rate wrong for A/B, A/C => B/C");
+			Assert.AreEqual(0.82168931578834d, fxCHF_EUR.OfferRate, Mathematics.Error, "Offer rate wrong for A/B, A/C => B/C");
 
 			var fxAUD_GBP = FXQuote.CalculateCrossCurrencyQuote(this.fxAUD_USD, this.fxGBP_USD);
-			Assert.AreEqual(0.63935398309083269, fxAUD_GBP.BidRate, 1E-10, "Bid rate wrong for A/B, C/B => A/C");
-			Assert.AreEqual(0.63987677628389927, fxAUD_GBP.OfferRate, 1E-10, "Offer rate wrong for A/B, C/B => A/C");
+			Assert.AreEqual(0.63935398309083269d, fxAUD_GBP.BidRate, Mathematics.Error, "Bid rate wrong for A/B, C/B => A/C");
+			Assert.AreEqual(0.63987677628389927d, fxAUD_GBP.OfferRate, Mathematics.Error, "Offer rate wrong for A/B, C/B => A/C");
 		}
 	
 		[TestMethod]
 		public void TestCalculateDifferentQuote()
 		{
 			var fxGBP_EUR = FXQuote.CalculateCrossCurrencyQuote(this.fxGBP_USD, this.fxUSD_EUR);
-			Assert.AreEqual(1.1956182516, fxGBP_EUR.BidRate, 1E-10, "Bid rate wrong for A/B, B/C => A/C");
-			Assert.AreEqual(1.1967837266, fxGBP_EUR.OfferRate, 1E-10, "Offer rate wrong for A/B, B/C => A/C");
+			Assert.AreEqual(1.1956182516d, fxGBP_EUR.BidRate, Mathematics.Error, "Bid rate wrong for A/B, B/C => A/C");
+			Assert.AreEqual(1.1967837266d, fxGBP_EUR.OfferRate, Mathematics.Error, "Offer rate wrong for A/B, B/C => A/C");
 
 			var fxEUR_AUD = FXQuote.CalculateCrossCurrencyQuote(this.fxUSD_EUR, this.fxAUD_USD);
-			Assert.AreEqual(1.3062504465947817, fxEUR_AUD.BidRate, 1E-10, "Bid rate wrong for A/B, C/A => B/C");
-			Assert.AreEqual(1.3077586867568349, fxEUR_AUD.OfferRate, 1E-10, "Offer rate wrong for A/B, C/A => B/C");
+			Assert.AreEqual(1.3062504465947817d, fxEUR_AUD.BidRate, Mathematics.Error, "Bid rate wrong for A/B, C/A => B/C");
+			Assert.AreEqual(1.3077586867568349d, fxEUR_AUD.OfferRate, Mathematics.Error, "Offer rate wrong for A/B, C/A => B/C");
 		}
 	}
 }

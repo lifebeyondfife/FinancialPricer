@@ -22,7 +22,7 @@ namespace LbF
 {
 	public class PricerConsole
 	{
-		static void Main(string[] args)
+		static void Main()
 		{
 			var cashflowPricer = new CashflowPricer();			
 			cashflowPricer.Calculate();

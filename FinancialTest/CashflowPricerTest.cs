@@ -23,13 +23,13 @@ namespace LbF
 	[TestClass]
 	public class CashflowPricerTest
 	{
-		private CashflowPricer cashflowPricerPV;
-		private CashflowPricer cashflowPricerRate;
+		private readonly CashflowPricer cashflowPricerPV;
+		private readonly CashflowPricer cashflowPricerRate;
 		
 		public CashflowPricerTest()
 		{
-			cashflowPricerRate = new CashflowPricer(years: 3, period: 1, coupon: 0.4021148036253774, principal:100, pv: 100.0);
-			cashflowPricerPV = new CashflowPricer(years: 3, period: 1, coupon: 0.4021148036253774, rate: 0.1, principal: 100);
+			cashflowPricerRate = new CashflowPricer(years: 3, period: 1, coupon: 0.4021148036253774d, principal: 100, pv: 100d);
+			cashflowPricerPV = new CashflowPricer(years: 3, period: 1, coupon: 0.4021148036253774d, rate: 0.1d, principal: 100);
 		}
 
 		[TestMethod]
@@ -37,7 +37,7 @@ namespace LbF
 		{
 			cashflowPricerRate.SolveInternalRateOfReturn();
 
-			Assert.AreEqual(0.1, cashflowPricerRate.Rate, 1E-10, "Test calculation of Cashflow Rate");
+			Assert.AreEqual(0.1d, cashflowPricerRate.Rate, Mathematics.Error, "Test calculation of Cashflow Rate");
 		}
 	
 		[TestMethod]
@@ -45,7 +45,7 @@ namespace LbF
 		{
 			cashflowPricerPV.CalculatePV();
 
-			Assert.AreEqual(100, cashflowPricerPV.PV, 1E-10, "Test calculation of Cashflow Rate");
+			Assert.AreEqual(100, cashflowPricerPV.PV, Mathematics.Error, "Test calculation of Cashflow Rate");
 		}
 	}
 }

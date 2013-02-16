@@ -27,7 +27,7 @@ namespace LbF
 	}
 
 	[FinancialInstrument]
-	public abstract class Instrument
+	public abstract class Instrument : IInstrument
 	{
 		[FinancialInput]
 		public uint Principal { get; set; }

@@ -65,7 +65,7 @@ namespace LbF
 
 		public override void Calculate()
 		{
-			if (this.Rate == 0.0)
+			if (Math.Abs(this.Rate) < Mathematics.Error)
 				SolveInternalRateOfReturn();
 			else
 				CalculatePV();
@@ -85,8 +85,8 @@ namespace LbF
 		{
 			Func<double, double> cashflowPrice = (calcRate =>
 			{
-				var pv = 0.0;
-				for (int i = 1; i <= this.Years * this.Period; ++i)
+				var pv = 0d;
+				for (var i = 1; i <= this.Years * this.Period; ++i)
 				{
 					pv += this.Principal * (this.Coupon / this.Period) * Math.Pow(1 + calcRate / this.Period, -i);
 				}
@@ -94,7 +94,7 @@ namespace LbF
 			});
 
 			//	Assume yield is between 0% and 50%
-			this.Rate = Mathematics.FindRoot(cashflowPrice, 0.0, 0.5);
+			this.Rate = Mathematics.FindRoot(cashflowPrice, 0d, 0.5d);
 		}
 	}
 }

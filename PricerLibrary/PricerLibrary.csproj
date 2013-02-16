@@ -64,6 +64,7 @@
     <Compile Include="Basis.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="FinancialException.cs" />
+    <Compile Include="IInstrument.cs" />
     <Compile Include="Instrument.cs" />
     <Compile Include="Mathematics.cs" />
     <Compile Include="Print.cs" />

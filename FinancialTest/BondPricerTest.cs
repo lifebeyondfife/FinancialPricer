@@ -24,40 +24,40 @@ namespace LbF
 	[TestClass]
 	public class BondPricerTest
 	{
-		BondPricer bondPricerYield;
-		BondPricer bondPricerClean;
+		private readonly BondPricer bondPricerYield;
+		private readonly BondPricer bondPricerClean;
 
 		public BondPricerTest()
 		{
 			bondPricerYield = new BondPricer(settlement: DateTime.Parse("1 January 2000"), maturity: DateTime.Parse("15 August 2010"),
-				basis: DayCount.ActAct, period: 4, coupon: 0.08, clean: 0.97, principal: 1,
-				horizonDate: DateTime.Parse("30 June 2005"), horizonPrice: 1.0, horizonReinvestment: 0.06);
+				basis: DayCount.ActAct, period: 4, coupon: 0.08d, clean: 0.97d, principal: 1,
+				horizonDate: DateTime.Parse("30 June 2005"), horizonPrice: 1d, horizonReinvestment: 0.06d);
 
 			bondPricerClean = new BondPricer(settlement: DateTime.Parse("1 January 2000"), maturity: DateTime.Parse("15 August 2010"),
-				basis: DayCount.ActAct, period: 4, coupon: 0.08, principal: 1, yieldToMaturity: 0.084295197233745636,
-				horizonDate: DateTime.Parse("30 June 2005"), horizonPrice: 1.0, horizonReinvestment: 0.06);
+				basis: DayCount.ActAct, period: 4, coupon: 0.08d, principal: 1, yieldToMaturity: 0.084295197233745636d,
+				horizonDate: DateTime.Parse("30 June 2005"), horizonPrice: 1d, horizonReinvestment: 0.06d);
 		}
 
 		[TestMethod]
 		public void TestBondCleanPriceAndPV()
 		{
 			bondPricerYield.Calculate();
-			Assert.AreEqual(0.084295197233745636, bondPricerYield.YieldToMaturity, 1E-10, "Test calculation of Bond Yield to Maturity");
+			Assert.AreEqual(0.084295197233745636d, bondPricerYield.YieldToMaturity, Mathematics.Error, "Test calculation of Bond Yield to Maturity");
 
 			bondPricerClean.Calculate();
-			Assert.AreEqual(0.97, bondPricerClean.Clean, 1E-10, "Test calculation of Bond Clean Price");
+			Assert.AreEqual(0.97d, bondPricerClean.Clean, Mathematics.Error, "Test calculation of Bond Clean Price");
 
-			Assert.AreEqual(bondPricerClean.PV, bondPricerYield.PV, 1E-10, "Test bonds' PV values match");
+			Assert.AreEqual(bondPricerClean.PV, bondPricerYield.PV, Mathematics.Error, "Test bonds' PV values match");
 		}
 
 		[TestMethod]
 		public void TestBondHorizonYieldAndPV()
 		{
 			bondPricerYield.Calculate();
-			Assert.AreEqual(1.5306128101742258, bondPricerYield.HorizonPV, 1E-10, "Test calculation of PV Yield to Horizon");
+			Assert.AreEqual(1.5306128101742258d, bondPricerYield.HorizonPV, Mathematics.Error, "Test calculation of PV Yield to Horizon");
 			
 			bondPricerClean.Calculate();
-			Assert.AreEqual(0.084443725360003441, bondPricerClean.HorizonYield, 1E-10, "Test calculation of Yield to Horizon");
+			Assert.AreEqual(0.084443725360003441d, bondPricerClean.HorizonYield, Mathematics.Error, "Test calculation of Yield to Horizon");
 		}
 	}
 }

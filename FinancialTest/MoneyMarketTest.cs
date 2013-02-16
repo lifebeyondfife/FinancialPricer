@@ -24,54 +24,54 @@ namespace LbF
 	[TestClass]
 	public class MoneyMarketTest
 	{
-		private MoneyMarket certificateDepositPV;
-		private MoneyMarket certificateDepositFV;
-		private MoneyMarket certificateDepositIssued;
-		private MoneyMarket certificateDepositMtM;
-		private MoneyMarket commercialPaper;
-		private MoneyMarket fixedDepositMtM;
+		private readonly MoneyMarket certificateDepositPV;
+		private readonly MoneyMarket certificateDepositFV;
+		private readonly MoneyMarket certificateDepositIssued;
+		private readonly MoneyMarket certificateDepositMtM;
+		private readonly MoneyMarket commercialPaper;
+		private readonly MoneyMarket fixedDepositMtM;
 
 		public MoneyMarketTest()
 		{
-			this.certificateDepositPV = new CertificateDeposit(principal: 1000, coupon: 0.08, basis: DayCount.Thirty360,
+			this.certificateDepositPV = new CertificateDeposit(principal: 1000, coupon: 0.08d, basis: DayCount.Thirty360,
 				settlement: DateTime.Parse("1 January 2010"), maturity: DateTime.Parse("1 April 2010"),
-				issued: DateTime.Parse("1 January 2010"), yield: 0.08);
+				issued: DateTime.Parse("1 January 2010"), yield: 0.08d);
 
-			this.certificateDepositFV = new CertificateDeposit(principal: 1000, coupon: 0.08, basis: DayCount.Thirty360,
+			this.certificateDepositFV = new CertificateDeposit(principal: 1000, coupon: 0.08d, basis: DayCount.Thirty360,
 				settlement: DateTime.Parse("1 January 2010"), maturity: DateTime.Parse("1 April 2010"),
-				issued: DateTime.Parse("1 January 2010"), yield: 0.08);
+				issued: DateTime.Parse("1 January 2010"), yield: 0.08d);
 
-			this.certificateDepositIssued = new CertificateDeposit(principal: 1000000, coupon: 0.0565, basis: DayCount.Act360,
+			this.certificateDepositIssued = new CertificateDeposit(principal: 1000000, coupon: 0.0565d, basis: DayCount.Act360,
 				settlement: DateTime.Parse("11 March 2002"), maturity: DateTime.Parse("11 June 2002"),
-				issued: DateTime.Parse("11 December 2001"), yield: 0.0475);
+				issued: DateTime.Parse("11 December 2001"), yield: 0.0475d);
 			
-			this.certificateDepositMtM = new CertificateDeposit(principal: 500000, coupon: 0.0625, basis: DayCount.Act360,
+			this.certificateDepositMtM = new CertificateDeposit(principal: 500000, coupon: 0.0625d, basis: DayCount.Act360,
 				settlement: DateTime.Parse("30 July 2002"), maturity: DateTime.Parse("14 March 2003"),
-				issued: DateTime.Parse("14 May 2002"), yield: 0.0576);
+				issued: DateTime.Parse("14 May 2002"), yield: 0.0576d);
 
-			this.commercialPaper = new DiscountPaper(principal: 1000000, discountRate: 0.059, basis: DayCount.Act360,
+			this.commercialPaper = new DiscountPaper(principal: 1000000, discountRate: 0.059d, basis: DayCount.Act360,
 				settlement: DateTime.Parse("30 July 2002"), maturity: DateTime.Parse("10 February 2003"));
 
-			this.fixedDepositMtM = new FixedDeposit(principal: 460000, rate: 0.055, basis: DayCount.Act360,
+			this.fixedDepositMtM = new FixedDeposit(principal: 460000, rate: 0.055d, basis: DayCount.Act360,
 				settlement: DateTime.Parse("30 July 2002"), maturity: DateTime.Parse("30 January 2003"));
 		}
 
 		[TestMethod]
 		public void TestDepositCertificatePV()
 		{
-			this.certificateDepositPV.FV = 1000;
+			this.certificateDepositPV.FV = 1000d;
 			this.certificateDepositPV.CalculatePV();
 
-			Assert.AreEqual(980.39215686274508, this.certificateDepositPV.PV, 1E-10, "Test calculation of Certificate of Deposit PV");
+			Assert.AreEqual(980.39215686274508d, this.certificateDepositPV.PV, Mathematics.Error, "Test calculation of Certificate of Deposit PV");
 		}
 
 		[TestMethod]
 		public void TestDepositCertificateFV()
 		{
-			this.certificateDepositFV.PV = 1000;
+			this.certificateDepositFV.PV = 1000d;
 			this.certificateDepositFV.Calculate();
 
-			Assert.AreEqual(1020, this.certificateDepositFV.FV, 1E-10, "Test calculation of Certificate of Deposit FV");
+			Assert.AreEqual(1020d, this.certificateDepositFV.FV, Mathematics.Error, "Test calculation of Certificate of Deposit FV");
 		}
 
 		[TestMethod]
@@ -79,9 +79,9 @@ namespace LbF
 		{
 			this.certificateDepositIssued.Calculate();
 
-			Assert.AreEqual(1028563.8888888889, this.certificateDepositIssued.FV, 1E-10,
+			Assert.AreEqual(1028563.8888888889d, this.certificateDepositIssued.FV, Mathematics.Error,
 				"Test calculation of Certificate of Deposit FV from Issued date");
-			Assert.AreEqual(1016228.0099898455, this.certificateDepositIssued.PV, 1E-10,
+			Assert.AreEqual(1016228.0099898455d, this.certificateDepositIssued.PV, Mathematics.Error,
 				"Test calculation of Certificate of Deposit PV from Issued date");
 		}
 
@@ -90,28 +90,28 @@ namespace LbF
 		{
 			this.commercialPaper.Calculate();
 
-			Assert.AreEqual(968041.66666666674, this.commercialPaper.PV, 1E-10, "Test calculation of Commercial Paper PV");
+			Assert.AreEqual(968041.66666666674d, this.commercialPaper.PV, Mathematics.Error, "Test calculation of Commercial Paper PV");
 		}
 
 		[TestMethod]
 		public void TestCommercialPaperMarkToMarket()
 		{
-			Assert.AreEqual(7161.11111111101, this.commercialPaper.MarkToMarket(DateTime.Parse("5 September 2002"), 0.0565,
-				Position.Long), 1E-10, "Test calculation of Commerical Paper Mark to Market");
+			Assert.AreEqual(7161.11111111101d, this.commercialPaper.MarkToMarket(DateTime.Parse("5 September 2002"), 0.0565d,
+				Position.Long), Mathematics.Error, "Test calculation of Commerical Paper Mark to Market");
 		}
 
 		[TestMethod]
-		public void TestCertificateDepositMtM()
+		public void TestCertificateDepositMarkToMarket()
 		{
-			Assert.AreEqual(-3914.55885083048, this.certificateDepositMtM.MarkToMarket(DateTime.Parse("5 September 2002"), 0.0538,
-				Position.Short), 1E-10, "Test calculation of Certificate Deposit Mark to Market");
+			Assert.AreEqual(-3914.55885083048d, this.certificateDepositMtM.MarkToMarket(DateTime.Parse("5 September 2002"), 0.0538d,
+				Position.Short), Mathematics.Error, "Test calculation of Certificate Deposit Mark to Market");
 		}
 
 		[TestMethod]
-		public void TestFixedDepositMtM()
+		public void TestFixedDepositMarkToMarket()
 		{
-			Assert.AreEqual(-3236.9136167767574, this.fixedDepositMtM.MarkToMarket(DateTime.Parse("5 September 2002"), 0.05125,
-				Position.Short), 1E-1, "Test calculation of Certificate Deposit Mark to Market");
+			Assert.AreEqual(-3236.9136167767574d, this.fixedDepositMtM.MarkToMarket(DateTime.Parse("5 September 2002"), 0.05125d,
+				Position.Short), Mathematics.Error, "Test calculation of Certificate Deposit Mark to Market");
 		}
 	}
 }

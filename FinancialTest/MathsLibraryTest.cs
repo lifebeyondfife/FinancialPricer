@@ -30,8 +30,8 @@ namespace LbF
 			// Quadratic with roots of x = -7 and x = 4
 			Func<double, double> function = x => (2 * x - 8) * (x + 7);
 
-			Assert.AreEqual(-7.0, Mathematics.FindRoot(function, -10, 0), 1E-10, "Finding root where x=-7");
-			Assert.AreEqual(4.0, Mathematics.FindRoot(function, 0, 10), 1E-10, "Finding root where x=4");
+			Assert.AreEqual(-7.0, Mathematics.FindRoot(function, -10d, 0d), Mathematics.Error, "Finding root where x=-7");
+			Assert.AreEqual(4.0, Mathematics.FindRoot(function, 0d, 10d), Mathematics.Error, "Finding root where x=4");
 		}
 	}
 }

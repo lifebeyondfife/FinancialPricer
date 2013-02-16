@@ -53,20 +53,19 @@ namespace LbF
 			this.Maturity = DateTime.Parse("1 January 2007");
 			this.DayCountBasis = DayCount.Thirty360;
 			this.Period = 2;
-			this.Rate = 0.08;
-			this.Clean = 0.97;
-			this.YieldToMaturity = 0.0;
+			this.Rate = 0.08d;
+			this.Clean = 0.97d;
+			this.YieldToMaturity = 0d;
 			this.Principal = 1000;
-			this.PV = 0.0;
+			this.PV = 0d;
 
 			this.HorizonDate = DateTime.Parse("1 January 2007");
 			this.HorizonPrice = 1;
-			this.HorizonReinvestment = 0.05;
+			this.HorizonReinvestment = 0.05d;
 		}
 
 		protected BondPricer(DateTime settlement, DateTime maturity, DayCount basis, int period, double coupon, double clean,
 			uint principal, double yieldToMaturity, DateTime horizonDate, double horizonPrice, double horizonReinvestment)
-			: base()
 		{
 			this.Settlement = settlement;
 			this.Maturity = maturity;
@@ -84,14 +83,14 @@ namespace LbF
 
 		public BondPricer(DateTime settlement, DateTime maturity, DayCount basis, int period, double coupon, double clean,
 			uint principal, DateTime horizonDate, double horizonPrice, double horizonReinvestment)
-			: this(settlement, maturity, basis, period, coupon, clean, principal, 0.0,
+			: this(settlement, maturity, basis, period, coupon, clean, principal, 0d,
 			horizonDate, horizonPrice, horizonReinvestment)
 		{
 		}
 
-		public BondPricer(DateTime settlement, DateTime maturity, DayCount basis, int period, double coupon, uint principal, 
+		public BondPricer(DateTime settlement, DateTime maturity, DayCount basis, int period, double coupon, uint principal,
 			double yieldToMaturity, DateTime horizonDate, double horizonPrice, double horizonReinvestment)
-			: this(settlement, maturity, basis, period, coupon, 0.0, principal, yieldToMaturity,
+			: this(settlement, maturity, basis, period, coupon, 0d, principal, yieldToMaturity,
 			horizonDate, horizonPrice, horizonReinvestment)
 		{
 		}
@@ -104,15 +103,15 @@ namespace LbF
 
 		public double GetCurrentYield()
 		{
-			if (this.Clean == 0.0)
+			if (Math.Abs(this.Clean) < Mathematics.Error)
 				CalculateClean();
 
-			return this.Rate / this.Clean * 100;
+			return this.Rate / this.Clean * 100d;
 		}
 
 		public double GetAdjustedCurrentYield()
 		{
-			if (this.Clean == 0.0)
+			if (Math.Abs(this.Clean) < Mathematics.Error)
 				CalculateClean();
 
 			DateTime previousCoupon;
@@ -134,14 +133,14 @@ namespace LbF
 
 			var lastCoupon = previousCoupon;
 			Basis.GetPreviousNextCoupons(this.Settlement, lastCoupon, this.Period, out previousCoupon, out nextCoupon);
-			int payments = Basis.PaymentCount(lastCoupon, nextCoupon, this.Period);
+			var payments = Basis.PaymentCount(lastCoupon, nextCoupon, this.Period);
 
 			Basis.GetPreviousNextCoupons(this.Settlement, this.Maturity, this.Period, out previousCoupon, out nextCoupon);
 			var accruedToPay = Basis.AccruedPeriod(this.Settlement, previousCoupon, this.Period, this.DayCountBasis);
 
-			var couponsToHorizon = 0.0;
+			var couponsToHorizon = 0d;
 			var payment = (this.Rate / this.Period) * this.Principal;
-			for (int i = 0; i < payments; ++i)
+			for (var i = 0; i < payments; ++i)
 				couponsToHorizon += payment * Math.Pow(1 + this.HorizonReinvestment / this.Period, i + accruedPeriod);
 
 			this.HorizonPV = this.HorizonPrice * this.Principal + (accruedPeriod * this.Principal * this.Rate / this.Period) + couponsToHorizon;
@@ -151,7 +150,7 @@ namespace LbF
 
 		public override void CalculatePV()
 		{
-			if (this.YieldToMaturity == 0.0)
+			if (Math.Abs(this.YieldToMaturity) < Mathematics.Error)
 				SolveBondYield();
 			else
 				CalculateClean();
@@ -164,12 +163,12 @@ namespace LbF
 			Basis.GetPreviousNextCoupons(this.Settlement, this.Maturity, this.Period, out previousCoupon, out nextCoupon);
 
 			var accruedPeriod = Basis.AccruedPeriod(this.Settlement, previousCoupon, this.Period, this.DayCountBasis);
-			int payments = Basis.PaymentCount(this.Maturity, nextCoupon, this.Period);
-		
-			this.Accrued = accruedPeriod * (this.Rate / this.Period) * this.Principal;
-			this.PV = 0;
+			var payments = Basis.PaymentCount(this.Maturity, nextCoupon, this.Period);
 
-			for (int i = 0; i < payments; ++i)
+			this.Accrued = accruedPeriod * (this.Rate / this.Period) * this.Principal;
+			this.PV = 0d;
+
+			for (var i = 0; i < payments; ++i)
 			{
 				var payment = (this.Rate / this.Period) * this.Principal;
 				var discountFactor = Math.Pow(1 + this.YieldToMaturity / this.Period, -(1 - accruedPeriod + i));
@@ -186,14 +185,14 @@ namespace LbF
 			Basis.GetPreviousNextCoupons(this.Settlement, this.Maturity, this.Period, out previousCoupon, out nextCoupon);
 
 			var accruedPeriod = Basis.AccruedPeriod(this.Settlement, previousCoupon, this.Period, this.DayCountBasis);
-			int payments = Basis.PaymentCount(this.Maturity, nextCoupon, this.Period);
+			var payments = Basis.PaymentCount(this.Maturity, nextCoupon, this.Period);
 
 			this.Accrued = accruedPeriod * (this.Rate / this.Period) * this.Principal;
-			
+
 			Func<double, double> bondPrice = (calcYield =>
 			{
-				var pv = 0.0;
-				for (int i = 0; i < payments; ++i)
+				var pv = 0d;
+				for (var i = 0; i < payments; ++i)
 				{
 					var payment = (this.Rate / this.Period);
 					var discountFactor = Math.Pow(1 + calcYield / this.Period, -(1 - accruedPeriod + i));
@@ -202,7 +201,7 @@ namespace LbF
 				return pv - accruedPeriod * (this.Rate / this.Period) - this.Clean;
 			});
 
-			this.YieldToMaturity = Mathematics.FindRoot(bondPrice, 0.0, 0.5);
+			this.YieldToMaturity = Mathematics.FindRoot(bondPrice, 0d, 0.5d);
 			this.PV = this.Clean * this.Principal + this.Accrued;
 		}
 	}

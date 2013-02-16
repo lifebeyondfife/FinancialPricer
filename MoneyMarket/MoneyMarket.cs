@@ -40,7 +40,7 @@ namespace LbF
 			this.Principal = 1000000;
 			this.Settlement = DateTime.Parse("17 March 2010");
 			this.Maturity = DateTime.Parse("17 July 2010");
-			this.Rate = 0.0655;
+			this.Rate = 0.0655d;
 			this.DayCountBasis = DayCount.Act360;
 		}
 
@@ -86,23 +86,23 @@ namespace LbF
 	}
 
 	[FinancialInstrument(Name = "Certificate of Deposit")]
-	public class CertificateDeposit : MoneyMarket
+	public sealed class CertificateDeposit : MoneyMarket
 	{
 		[FinancialInput]
 		public DateTime Issued { get; set; }
 		[FinancialInput]
-		public virtual double Coupon { get; set; }
+		public double Coupon { get; set; }
 
 		public CertificateDeposit()
 		{
 			this.PV = 1000;
-			this.Coupon = 0.08;
+			this.Coupon = 0.08d;
 			this.Principal = 1000;
 			this.Settlement = DateTime.Parse("1 January 2010");
 			this.Maturity = DateTime.Parse("1 April 2010");
 			this.DayCountBasis = DayCount.Thirty360;
 			this.Issued = DateTime.Parse("1 January 2010");
-			this.Rate = 0.08;
+			this.Rate = 0.08d;
 		}
 
 		public CertificateDeposit(uint principal, double coupon, DayCount basis, DateTime settlement,
@@ -125,7 +125,7 @@ namespace LbF
 
 		public override void CalculatePV()
 		{
-			if (this.FV == 0.0)
+			if (Math.Abs(this.FV) < Mathematics.Error)
 				CalculateFV();
 
 			var settlementToMaturity = Basis.AccruedPeriod(this.Maturity, this.Settlement, 1, this.DayCountBasis);
@@ -150,7 +150,7 @@ namespace LbF
 
 		public DiscountPaper()
 		{
-			this.Rate = 0.0712;
+			this.Rate = 0.0712d;
 			this.Principal = 500000;
 			this.Settlement = DateTime.Parse("12 August 2002");
 			this.Maturity = DateTime.Parse("1 October 2002");

@@ -22,6 +22,8 @@ namespace LbF
 {
 	public class Mathematics
 	{
+		public const double Error = 1E-10;
+
 		public static double FindRoot(Func<double, double> function, double lowerBound, double upperBound)
 		{
 			var x0 = lowerBound;
@@ -32,7 +34,7 @@ namespace LbF
 			var function_x1 = function(x1);
 
 			//	Secant Root Finding Method.
-			while (Math.Abs(function_x1) > 1E-12)
+			while (Math.Abs(function_x1) > Mathematics.Error)
 			{
 				xNext = x1 - (function_x1 * (x1 - x0) / (function_x1 - function_x0));
 				x0 = x1;

@@ -46,18 +46,18 @@ namespace LbF
 
 				case DayCount.Act360:
 					totalDays = endDate.Subtract(startDate).Days;
-					return (double) totalDays / ((double) 360 / period);
+					return totalDays / ((double) 360 / period);
 
 				case DayCount.Act365:
 					totalDays = endDate.Subtract(startDate).Days;
-					return (double) totalDays / ((double) 365 / period);
+					return totalDays / ((double) 365 / period);
 
 				case DayCount.Thirty360:
 					var years = (endDate.Year - startDate.Year);
 					var months = (endDate.Month - startDate.Month);
 					var days = Math.Min(endDate.Day - startDate.Day, 30);
 					totalDays = (years * 12 * 30) + (months * 30) + days;
-					return (double) (totalDays) / ((double) 360 / period);
+					return totalDays / ((double) 360 / period);
 
 				default:
 					throw new FinancialException("Invalid Basis: " + dayCount);
@@ -69,13 +69,14 @@ namespace LbF
 			if (nextCoupon > maturity)
 				throw new FinancialException("Next Coupon must be before Maturity");
 
-			int payments = 0;
+			var payments = 0;
 			var currentPayment = nextCoupon;
 			while (currentPayment <= maturity)
 			{
 				currentPayment = currentPayment.AddMonths(12 / period);
 				++payments;
 			}
+
 			return payments;
 		}
 
@@ -96,12 +97,12 @@ namespace LbF
 
 		public static double BondToMoneyMarketYield(double bondEquivalentYield)
 		{
-			return (360.0 / 365.0) * bondEquivalentYield;
+			return (360d / 365d) * bondEquivalentYield;
 		}
 
 		public static double MoneyMarketToBondYield(double moneyMarketYield)
 		{
-			return (365.0 / 360.0) * moneyMarketYield;
+			return (365d / 360d) * moneyMarketYield;
 		}
 	}
 }

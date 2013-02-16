@@ -23,16 +23,17 @@ namespace LbF
 	[TestClass]
 	public class YieldCurveTest
 	{
-		private YieldCurve yieldCurveSpot;
-		private YieldCurve yieldCurvePar;
+		private readonly YieldCurve yieldCurveSpot;
+		private readonly YieldCurve yieldCurvePar;
 
 		public YieldCurveTest()
 		{
-			yieldCurveSpot = new YieldCurve();
-			yieldCurveSpot.ParYields = new[] { 0.0, 0.08, 0.09, 0.1, 0.11 };
+			yieldCurveSpot = new YieldCurve { ParYields = new[] { 0d, 0.08d, 0.09d, 0.1d, 0.11d } };
 
-			yieldCurvePar = new YieldCurve();
-			yieldCurvePar.SpotYields = new[] { 0.0, 0.08, 0.09045445071809799, 0.10139519558712839, 0.11301161161266693 };
+			yieldCurvePar = new YieldCurve
+				{
+					SpotYields = new[] { 0d, 0.08d, 0.09045445071809799d, 0.10139519558712839d, 0.11301161161266693d }
+				};
 		}
 
 		[TestMethod]
@@ -40,9 +41,9 @@ namespace LbF
 		{
 			yieldCurveSpot.BootstrapSpotYields();
 
-			var expectedValues = new[] { 0.0, 0.08, 0.09045445071809799, 0.10139519558712839, 0.11301161161266693 };
-			for (int i = 0; i < expectedValues.Length; ++i)
-				Assert.AreEqual(expectedValues[i], yieldCurveSpot.SpotYields[i], 1E-10, "Test calculation of Bootstrapped Spot Yields");
+			var expectedValues = new[] { 0d, 0.08d, 0.09045445071809799d, 0.10139519558712839d, 0.11301161161266693d };
+			for (var i = 0; i < expectedValues.Length; ++i)
+				Assert.AreEqual(expectedValues[i], yieldCurveSpot.SpotYields[i], Mathematics.Error, "Test calculation of Bootstrapped Spot Yields");
 		}
 
 		[TestMethod]
@@ -50,9 +51,9 @@ namespace LbF
 		{
 			yieldCurvePar.BootstrapParYields();
 
-			var expectedValues = new[] { 0.0, 0.08, 0.09, 0.1, 0.11 };
-			for (int i = 0; i < expectedValues.Length; ++i)
-				Assert.AreEqual(expectedValues[i], yieldCurvePar.ParYields[i], 1E-10, "Test calculation of Bootstrapped Par Yields");
+			var expectedValues = new[] { 0d, 0.08d, 0.09d, 0.1d, 0.11d };
+			for (var i = 0; i < expectedValues.Length; ++i)
+				Assert.AreEqual(expectedValues[i], yieldCurvePar.ParYields[i], Mathematics.Error, "Test calculation of Bootstrapped Par Yields");
 		}
 
 		[TestMethod]
@@ -61,8 +62,8 @@ namespace LbF
 			yieldCurveSpot.BootstrapSpotYields();
 			yieldCurvePar.BootstrapParYields();
 
-			for (int i=0; i < yieldCurvePar.ParYields.Count; i++)
-				Assert.AreEqual(yieldCurvePar.DiscountFactors[i], yieldCurveSpot.DiscountFactors[i], 1E-10,
+			for (var i = 0; i < yieldCurvePar.ParYields.Count; i++)
+				Assert.AreEqual(yieldCurvePar.DiscountFactors[i], yieldCurveSpot.DiscountFactors[i], Mathematics.Error,
 					"Test calculation of Bootstrapped Discount Factors");
 		}
 	}

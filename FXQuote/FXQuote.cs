@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -16,8 +16,8 @@ namespace LbF
 		{
 			this.BaseCurrency = "GBP";
 			this.CounterCurrency = "EUR";
-			this.BidRate = 1.19237;
-			this.OfferRate = 1.19287;
+			this.BidRate = 1.19237d;
+			this.OfferRate = 1.19287d;
 		}
 
 		public FXQuote(string baseCurrency, string counterCurrency, double bidRate, ushort offerPlusPip)
@@ -25,7 +25,7 @@ namespace LbF
 			this.BaseCurrency = baseCurrency;
 			this.CounterCurrency = counterCurrency;
 			this.BidRate = bidRate;
-			this.OfferRate = bidRate + ((double) offerPlusPip / 10000);
+			this.OfferRate = bidRate + (offerPlusPip / 10000d);
 		}
 
 		public override string ToString()
@@ -34,12 +34,12 @@ namespace LbF
 			result.Append("  --------------\n");
 			result.AppendFormat("  | {0}/{1}:".PadRight(Constants.Spacing), this.BaseCurrency, this.CounterCurrency);
 
-			var bidString = this.BidRate.ToString().Take(7).ToArray();
-			var offerString = this.OfferRate.ToString().Take(7).ToArray();
+			var bidString = this.BidRate.ToString(CultureInfo.InvariantCulture).Take(7).ToArray();
+			var offerString = this.OfferRate.ToString(CultureInfo.InvariantCulture).Take(7).ToArray();
 
 			var offerDiff = new StringBuilder();
 			var bidAndOfferDiffer = false;
-			for (int i = 0; i < Math.Max(bidString.Length, offerString.Length); ++i)
+			for (var i = 0; i < Math.Max(bidString.Length, offerString.Length); ++i)
 			{
 				if (bidAndOfferDiffer)
 				{
@@ -67,22 +67,18 @@ namespace LbF
 
 		public static FXQuote CalculateCrossCurrencyQuote(FXQuote firstQuote, FXQuote secondQuote)
 		{
-			string commonCurrency = FindCommonCurrency(firstQuote, secondQuote);
+			var commonCurrency = FindCommonCurrency(firstQuote, secondQuote);
 
 			if (firstQuote.BaseCurrency == commonCurrency)
 			{
-				if (firstQuote.BaseCurrency == secondQuote.BaseCurrency)
-					return CalculateSameQuote(commonCurrency, firstQuote, secondQuote);
-				else
-					return CalculateDifferentQuote(commonCurrency, firstQuote, secondQuote);
+				return firstQuote.BaseCurrency == secondQuote.BaseCurrency ?
+					CalculateSameQuote(commonCurrency, firstQuote, secondQuote) :
+					CalculateDifferentQuote(commonCurrency, firstQuote, secondQuote);
 			}
-			else
-			{
-				if (firstQuote.CounterCurrency == secondQuote.CounterCurrency)
-					return CalculateSameQuote(commonCurrency, firstQuote, secondQuote);
-				else
-					return CalculateDifferentQuote(commonCurrency, firstQuote, secondQuote);
-			}
+
+			return firstQuote.CounterCurrency == secondQuote.CounterCurrency ?
+				CalculateSameQuote(commonCurrency, firstQuote, secondQuote) :
+				CalculateDifferentQuote(commonCurrency, firstQuote, secondQuote);
 		}
 
 		private static FXQuote CalculateDifferentQuote(string commonCurrency, FXQuote firstQuote, FXQuote secondQuote)
@@ -133,14 +129,17 @@ namespace LbF
 		{
 			if (firstQuote.BaseCurrency == secondQuote.BaseCurrency)
 				return firstQuote.BaseCurrency;
-			else if (firstQuote.BaseCurrency == secondQuote.CounterCurrency)
+
+			if (firstQuote.BaseCurrency == secondQuote.CounterCurrency)
 				return firstQuote.BaseCurrency;
-			else if (firstQuote.CounterCurrency == secondQuote.BaseCurrency)
+
+			if (firstQuote.CounterCurrency == secondQuote.BaseCurrency)
 				return firstQuote.CounterCurrency;
-			else if (firstQuote.CounterCurrency == secondQuote.CounterCurrency)
+
+			if (firstQuote.CounterCurrency == secondQuote.CounterCurrency)
 				return firstQuote.CounterCurrency;
-			else
-				throw new FinancialException("No common currency between FXQuote objects");
+
+			throw new FinancialException("No common currency between FXQuote objects");
 		}
 	}
 }
